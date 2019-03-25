@@ -8,17 +8,29 @@
  * @var string $port - number of port to check
  */
 function check_if_port_open( $ip, $transport, $port ) {
-    if ( 'udp' == strtolower($transport) || 'ssl' == strtolower($transport) || 'tsl' == strtolower($transport) ) {
-        $transport = strtolower($transport) . '://';
+    if ( 'udp' == strtolower($transport) || 'ssl' == strtolower($transport) || 'tls' == strtolower($transport)  ) {
+        $transport = strtolower($transport);
     } else {
-        $transport = '';
+        $transport = 'tcp';
     }
 
-    $conection = fsockopen( $transport . $ip, $port, $errno, $errstr, 30 );
+    $conection = fsockopen( $transport . '://' . $ip, $port, $errno, $errstr, $timeout = 3 );
     if ( $conection ){ 
-        echo "Port $port jest otwarty.";
-        fclose($conection);
-        return true;
+            socket_set_timeout( $conection, $timeout );
+            $service_name = getservbyport( $port, $transport );
+            $write = fwrite($conection, "\x00");
+            if ( ! $write ) {
+                echo "Nawiązano połącznie z hostem. Port ($service_name) $port jest zamknięty. Błąd odpowiedzi portu.";
+            }
+            $startTime = time();
+            $header    = fread( $conection, 1 );
+            $endTime   = time();
+            $timeDiff  = $endTime - $startTime;
+            if ( $timeDiff >= $timeout ) {
+                echo "Port ($service_name) $port jest otwarty";
+                fclose( $conection );
+                return 1;
+            }
     } else {
         echo "Port $port jest zamknięty. Wystąpił błąd nr. $errno: $errstr";
         return false;
