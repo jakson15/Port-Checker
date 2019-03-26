@@ -43,7 +43,7 @@ function check_if_port_open( $ip, $transport, $port, $timeout = 1.0 ) {
             }
             echo "Nawiązano połącznie $transport z hostem. Port ($service_name) $port jest otwarty.";
             fclose( $connection );
-            return 1;
+            return true;
         }
 
     } else {
