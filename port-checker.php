@@ -15,7 +15,7 @@ function check_if_port_open( $ip, $transport, $port ) {
     }
 
     $service_name = getservbyport( $port, $transport );
-    $conection    = fsockopen( $transport . '://' . $ip, $port, $errno, $errstr, $timeout = 1 );
+    $conection    = fsockopen( $transport . '://' . $ip, $port, $errno, $errstr, $timeout = 3 );
     if ( $conection ){
         if ( 'udp' == $transport ){
             socket_set_timeout( $conection, $timeout );
