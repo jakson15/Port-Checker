@@ -1,6 +1,6 @@
 <?php
 /**
- * Function check if port is open.
+ * Function checks if port is open.
  *
  * @var string $ip - Host or IP to check
  * @var string $transport - type of transportation (if empty = TCP). 
@@ -51,4 +51,3 @@ function check_if_port_open( $ip, $transport, $port, $timeout = 1.0 ) {
         return false;
     }
 }
-check_if_port_open( '79.133.211.124','udp', '5060' );
